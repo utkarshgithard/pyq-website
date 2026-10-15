@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const body: unknown = await request.json().catch(() => null);
   if (!body || typeof body !== "object" || !("username" in body) || !("password" in body)) {
