@@ -16,20 +16,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid username or password format." }, { status: 400 });
   }
 
-  const trimmedUsername = username.trim();
-  const admin = await prisma.admin.findUnique({
-    where: { username: trimmedUsername },
-  });
+  try {
+    const trimmedUsername = username.trim();
+    const admin = await prisma.admin.findUnique({
+      where: { username: trimmedUsername },
+    });
 
-  if (!admin) {
-    return NextResponse.json({ error: "Incorrect username or password." }, { status: 401 });
+    if (!admin) {
+      return NextResponse.json({ error: "Incorrect username or password." }, { status: 401 });
+    }
+
+    const passwordMatches = await bcrypt.compare(password, admin.passwordHash);
+    if (!passwordMatches) {
+      return NextResponse.json({ error: "Incorrect username or password." }, { status: 401 });
+    }
+
+    await createAdminSession(admin.id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Login error:", error);
+    return NextResponse.json(
+      {
+        error: "Database error during login. Check connection settings.",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
-
-  const passwordMatches = await bcrypt.compare(password, admin.passwordHash);
-  if (!passwordMatches) {
-    return NextResponse.json({ error: "Incorrect username or password." }, { status: 401 });
-  }
-
-  await createAdminSession(admin.id);
-  return NextResponse.json({ success: true });
 }

@@ -18,35 +18,46 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Semester must be between 1 and 8." }, { status: 400 });
   }
 
-  const papers = await prisma.paper.findMany({
-    where: {
-      ...(branches.length === 1
-        ? { branch: branches[0] }
-        : branches.length > 1
-        ? { branch: { in: branches } }
-        : {}),
-      ...(semester ? { semester } : {}),
-      ...(search
-        ? {
-            OR: [
-              { paperCode: { contains: search, mode: "insensitive" } },
-              { title: { contains: search, mode: "insensitive" } },
-            ],
-          }
-        : {}),
-    },
-    select: {
-      id: true,
-      paperCode: true,
-      title: true,
-      branch: true,
-      semester: true,
-      examYear: true,
-      fileSize: true,
-    },
-    orderBy: [{ branch: "asc" }, { examYear: "desc" }, { createdAt: "desc" }],
-    take: 200,
-  });
+  try {
+    const papers = await prisma.paper.findMany({
+      where: {
+        ...(branches.length === 1
+          ? { branch: branches[0] }
+          : branches.length > 1
+          ? { branch: { in: branches } }
+          : {}),
+        ...(semester ? { semester } : {}),
+        ...(search
+          ? {
+              OR: [
+                { paperCode: { contains: search, mode: "insensitive" } },
+                { title: { contains: search, mode: "insensitive" } },
+              ],
+            }
+          : {}),
+      },
+      select: {
+        id: true,
+        paperCode: true,
+        title: true,
+        branch: true,
+        semester: true,
+        examYear: true,
+        fileSize: true,
+      },
+      orderBy: [{ branch: "asc" }, { examYear: "desc" }, { createdAt: "desc" }],
+      take: 200,
+    });
 
-  return NextResponse.json({ papers });
+    return NextResponse.json({ papers });
+  } catch (error) {
+    console.error("Error fetching papers:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to fetch papers from database.",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
 }
