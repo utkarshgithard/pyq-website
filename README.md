@@ -10,14 +10,12 @@ A full-stack previous-year question paper library for Bihar Engineering Universi
 
 ## Local setup
 
-1. Install dependencies: `npm install`
-2. Copy `.env.example` to `.env` and set `DATABASE_URL`.
-3. Configure Supabase Storage (see [Supabase Storage Setup](#supabase-storage-setup) below).
-4. Generate an admin password hash with `npm run admin:hash`, then set `ADMIN_USERNAME` and `ADMIN_PASSWORD_HASH` in `.env`.
-5. Set `SESSION_SECRET` to a random value with at least 32 characters.
-6. Create the database tables: `npm run db:push`
-7. Start the app: `npm run dev`
-8. Visit `http://localhost:3000`. Admin uploads are at `http://localhost:3000/admin`.
+
+## Contributors
+
+The contributor list is available at `http://localhost:3000/contributors`. To add
+someone, add an entry with their `studentName` and `collegeName` to
+`src/lib/contributors.ts`.
 
 ## Supabase Storage Setup
 
@@ -43,4 +41,3 @@ Admin credentials are saved directly in your Supabase database (`Admin` table) u
 - Admin sessions are signed with `SESSION_SECRET`, stored in an HTTP-only same-site cookie, and expire after 12 hours.
 
 Uploads accept PDF files up to 20 MB. Paper codes are unique. Removing a paper from the admin page removes its database record and stored file.
-

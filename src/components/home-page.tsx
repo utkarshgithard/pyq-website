@@ -147,9 +147,14 @@ export function HomePage() {
             </span>
           </div>
         </button>
-        <Link href="/admin" className="rounded-full border border-[#dfe4dc] bg-white px-4 py-2 text-xs font-semibold text-[#4e5b52] shadow-xs transition hover:border-[#145c42] hover:text-[#145c42]">
-          Admin portal
-        </Link>
+        <nav className="flex items-center gap-2">
+          <Link href="/contributors" className="rounded-full border border-[#dfe4dc] bg-white px-4 py-2 text-xs font-semibold text-[#4e5b52] shadow-xs transition hover:border-[#145c42] hover:text-[#145c42]">
+            Contributors
+          </Link>
+          <Link href="/admin" className="rounded-full border border-[#dfe4dc] bg-white px-4 py-2 text-xs font-semibold text-[#4e5b52] shadow-xs transition hover:border-[#145c42] hover:text-[#145c42]">
+            Admin portal
+          </Link>
+        </nav>
       </header>
 
       {/* Hero Banner */}
