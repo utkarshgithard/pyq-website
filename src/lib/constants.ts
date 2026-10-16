@@ -13,11 +13,10 @@ export const CSE_SPECIALIZATIONS = [
   "Information Technology",
 ] as const;
 
-/** Other (non-CSE) engineering branches */
+/** Other engineering branches (used in admin upload form) */
 export const OTHER_BRANCHES = [
   "Civil Engineering",
-  "Electrical Engineering",
-  "Electronics & Communication",
+  "Electrical & Electronics Engineering",
   "Mechanical Engineering",
 ] as const;
 
@@ -33,8 +32,8 @@ export type ExactBranch = (typeof ALL_BRANCHES)[number];
 
 /**
  * Student-facing branch groups shown on the home page.
- * Students browse by these broad groups; internally all CSE variants
- * are fetched when the student picks "Computer Science & Engineering".
+ * Students browse by these broad groups; internally all sub-branches
+ * are fetched when the student picks a group.
  */
 export const STUDENT_BRANCH_GROUPS = [
   {
@@ -43,8 +42,14 @@ export const STUDENT_BRANCH_GROUPS = [
     matches: CSE_SPECIALIZATIONS as unknown as string[],
   },
   { label: "Civil Engineering", matches: ["Civil Engineering"] },
-  { label: "Electrical Engineering", matches: ["Electrical Engineering"] },
-  { label: "Electronics & Communication", matches: ["Electronics & Communication"] },
+  {
+    label: "Electrical & Electronics Engineering",
+    matches: [
+      "Electrical & Electronics Engineering",
+      "Electrical Engineering",
+      "Electronics & Communication",
+    ],
+  },
   { label: "Mechanical Engineering", matches: ["Mechanical Engineering"] },
 ] as const;
 

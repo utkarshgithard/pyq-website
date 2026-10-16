@@ -44,10 +44,9 @@ function getBranchIcon(branchLabel: string) {
       return <Code2 className="size-6 text-[#145c42]" />;
     case "Civil Engineering":
       return <Building2 className="size-6 text-[#145c42]" />;
-    case "Electrical Engineering":
+    case "Electrical & Electronics Engineering":
+    case "Electrical and Electronics Engineering":
       return <Zap className="size-6 text-[#145c42]" />;
-    case "Electronics & Communication":
-      return <Radio className="size-6 text-[#145c42]" />;
     case "Mechanical Engineering":
       return <Cog className="size-6 text-[#145c42]" />;
     case "Information Technology":
@@ -238,7 +237,10 @@ export function HomePage() {
                     <div>
                       <h3 className="font-bold leading-snug text-[#1b261f] group-hover:text-[#145c42]">{group.label}</h3>
                       <p className="mt-1 text-xs text-[#7d8b80]">
-                        {group.matches.length > 1 ? `${group.matches.length} specialisations · ` : ""}8 Semesters
+                        {group.label === "Computer Science & Engineering"
+                          ? "CSE & Allied Specialisations · "
+                          : ""}
+                        8 Semesters
                       </p>
                     </div>
                   </div>
