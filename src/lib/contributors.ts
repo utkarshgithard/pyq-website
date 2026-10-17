@@ -3,4 +3,4 @@ export type Contributor = {
   collegeName: string;
 };
 
-export const contributors: Contributor[] = [{ studentName: "Abhijeet Nayan", collegeName: "BCE PATNA" }];
+export const contributors: Contributor[] = [{ studentName: "Abhijeet Nayan", collegeName: "BCE PATNA" },{studentName: "Gyaan", collegeName: "BCE PATNA"}];

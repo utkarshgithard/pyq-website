@@ -10,6 +10,7 @@ A full-stack previous-year question paper library for Bihar Engineering Universi
 
 ## Local setup
 
+Set `DATABASE_URL` to the Supabase pooled connection string for application queries and `DIRECT_URL` to the direct PostgreSQL connection string for Prisma schema changes such as `npm run db:push`.
 
 ## Contributors
 
@@ -40,4 +41,4 @@ Admin credentials are saved directly in your Supabase database (`Admin` table) u
 - You can change your password anytime using the **Change password** button in the `/admin` web interface.
 - Admin sessions are signed with `SESSION_SECRET`, stored in an HTTP-only same-site cookie, and expire after 12 hours.
 
-Uploads accept PDF files up to 20 MB. Paper codes are unique. Removing a paper from the admin page removes its database record and stored file.
+Uploads accept PDF files up to 20 MB. Paper codes may be reused, including for papers shared across branches. After updating an existing database, run `npm run db:push` to remove its old paper-code uniqueness constraint. Removing a paper from the admin page removes its database record and stored file.

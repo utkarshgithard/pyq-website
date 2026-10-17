@@ -116,6 +116,9 @@ export function HomePage() {
       if (!map.has(p.branch)) map.set(p.branch, []);
       map.get(p.branch)!.push(p);
     }
+    for (const branchPapers of map.values()) {
+      branchPapers.sort((a, b) => b.examYear - a.examYear);
+    }
     return map;
   }, [papers, search]);
 

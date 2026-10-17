@@ -45,7 +45,7 @@ export async function GET(request: Request) {
         examYear: true,
         fileSize: true,
       },
-      orderBy: [{ branch: "asc" }, { examYear: "desc" }, { createdAt: "desc" }],
+      orderBy: [{ examYear: "desc" }, { branch: "asc" }, { createdAt: "desc" }],
       take: 200,
     });
 

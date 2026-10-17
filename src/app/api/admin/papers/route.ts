@@ -35,11 +35,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Check each field and attach a valid PDF." }, { status: 400 });
   }
 
-  const existing = await prisma.paper.findUnique({ where: { paperCode } });
-  if (existing) {
-    return NextResponse.json({ error: "A paper with that paper code already exists." }, { status: 409 });
-  }
-
   let stored: { storageName: string; fileSize: number };
   try {
     stored = await storePdf(file);
@@ -57,15 +52,60 @@ export async function POST(request: Request) {
     await deletePdf(stored.storageName).catch((cleanupError: unknown) => {
       console.error("Failed to remove orphaned uploaded paper:", cleanupError);
     });
-    if (
-      error instanceof Error &&
-      "code" in error &&
-      error.code === "P2002"
-    ) {
-      return NextResponse.json({ error: "A paper with that paper code already exists." }, { status: 409 });
-    }
     console.error("Failed to save paper metadata:", error);
     return NextResponse.json({ error: "Unable to save paper details." }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Unable to read the paper details." }, { status: 400 });
+  }
+
+  if (typeof body !== "object" || body === null) {
+    return NextResponse.json({ error: "Paper details are required." }, { status: 400 });
+  }
+
+  const details = body as Record<string, unknown>;
+  const id = typeof details.id === "string" ? details.id.trim() : "";
+  const paperCode = typeof details.paperCode === "string" ? details.paperCode.trim() : "";
+  const title = typeof details.title === "string" ? details.title.trim() : "";
+  const branch = typeof details.branch === "string" ? details.branch.trim() : "";
+  const semester = details.semester;
+  const examYear = details.examYear;
+
+  if (
+    !id ||
+    paperCode.length < 2 || paperCode.length > 40 ||
+    !/^[A-Za-z0-9_-]+$/.test(paperCode) ||
+    title.length < 2 || title.length > 160 ||
+    branch.length < 2 || branch.length > 100 ||
+    typeof semester !== "number" || !Number.isInteger(semester) || semester < 1 || semester > 8 ||
+    typeof examYear !== "number" || !Number.isInteger(examYear) ||
+    examYear < 2000 || examYear > new Date().getFullYear() + 1
+  ) {
+    return NextResponse.json({ error: "Check each paper detail and try again." }, { status: 400 });
+  }
+
+  try {
+    const paper = await prisma.paper.update({
+      where: { id },
+      data: { paperCode, title, branch, semester, examYear },
+    });
+    return NextResponse.json({ paper });
+  } catch (error) {
+    if (error instanceof Error && "code" in error) {
+      if (error.code === "P2025") {
+        return NextResponse.json({ error: "Paper not found." }, { status: 404 });
+      }
+    }
+    console.error("Failed to update paper metadata:", error);
+    return NextResponse.json({ error: "Unable to update paper details." }, { status: 500 });
   }
 }
 
